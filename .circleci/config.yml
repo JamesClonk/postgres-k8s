@@ -1,0 +1,28 @@
+version: 2.1
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+    - build:
+        filters:
+          branches:
+            only: master
+
+jobs:
+  build:
+    docker:
+    - image: cimg/base:2020.01
+
+    steps:
+    - setup_remote_docker:
+        docker_layer_caching: true
+    - checkout
+
+    # download binaries
+    - run: make stolon
+
+    # build and publish image
+    - run: make login
+    - run: make build
+    - run: make publish

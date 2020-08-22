@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: postgres
+  labels:
+    app: postgres
+data:
+  POSTGRES_DB: test-db
+  POSTGRES_USER: test-user
+  POSTGRES_PASSWORD: test-password
+  PGDATA: /var/lib/postgresql/data/pgdata
