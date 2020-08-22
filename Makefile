@@ -21,8 +21,8 @@ stolon:
 ## login: login to docker hub
 login:
 	@export PATH="$${HOME}/bin:$${PATH}"
-	if [ -z $${DOCKER_USER} ]; then echo 'DOCKER_USER is undefined'; exit 1; fi; \
-	if [ -z $${DOCKER_PASS} ]; then echo 'DOCKER_PASS is undefined'; exit 1; fi; \
+	if [ -z $${DOCKER_USER} ]; then echo 'DOCKER_USER is undefined'; exit 1; fi
+	if [ -z $${DOCKER_PASS} ]; then echo 'DOCKER_PASS is undefined'; exit 1; fi
 	@echo $${DOCKER_PASS} | docker login -u $${DOCKER_USER} --password-stdin
 
 .PHONY: build
