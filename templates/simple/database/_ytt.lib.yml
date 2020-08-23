@@ -6,22 +6,6 @@
   app.component: #@ component
 #@ end
 
-#@ def labelSelector(component):
-  matchExpressions:
-  - key: app
-    operator: In
-    values:
-    - #@ data.values.app
-  - key: app.service
-    operator: In
-    values:
-    - postgres
-  - key: app.component
-    operator: In
-    values:
-    - #@ component
-#@ end
-
 #@ def cpu(n):
 #@   return str(n)+"m"
 #@ end

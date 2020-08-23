@@ -51,3 +51,9 @@ cleanup: docker-cleanup
 ## docker-cleanup: cleans up local docker images and volumes
 docker-cleanup:
 	docker system prune --volumes -a
+
+.PHONY: pgadmin
+## pgadmin: connect to deployed pgadmin dashboard
+pgadmin:
+	sleep 2 && firefox 'http://127.0.0.1:8888' &
+	@kubectl -n postgres port-forward service/postgres-pgadmin 8888:8080

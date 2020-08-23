@@ -1,0 +1,16 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels")
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: #@ data.values.app + "-pgadmin"
+  namespace: #@ data.values.namespace
+  labels: #@ labels("pgadmin")
+spec:
+  type: ClusterIP
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector: #@ labels("pgadmin")

@@ -29,7 +29,7 @@ spec:
         - containerPort: 5432
         envFrom:
         - secretRef:
-            name: #@ data.values.app + "-env-secret"
+            name: #@ data.values.app + "-database-secret"
         securityContext:
           allowPrivilegeEscalation: false
         resources: #@ resources()
