@@ -57,3 +57,9 @@ docker-cleanup:
 pgadmin:
 	sleep 2 && firefox 'http://127.0.0.1:8888' &
 	@kubectl -n postgres port-forward service/postgres-pgadmin 8888:8080
+
+.PHONY: pgweb
+## pgweb: connect to deployed pgweb dashboard
+pgweb:
+	sleep 2 && firefox 'http://127.0.0.1:8888' &
+	@kubectl -n postgres port-forward service/postgres-pgweb 8888:8081

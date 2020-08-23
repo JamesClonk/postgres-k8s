@@ -1,5 +1,7 @@
 #@ load("@ytt:data", "data")
 #@ load("_ytt.lib.yml", "labels")
+
+#@ if data.values.pgadmin.enabled:
 ---
 apiVersion: v1
 kind: Service
@@ -14,3 +16,4 @@ spec:
     protocol: TCP
     targetPort: 8080
   selector: #@ labels("pgadmin")
+#@ end
