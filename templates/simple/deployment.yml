@@ -1,50 +1,60 @@
+#@ load("@ytt:data", "data")
+#@ load("_ytt.lib.yml", "labels", "resources", "disk")
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
-  namespace: postgres
-  labels:
-    app: postgres
+  name: #@ data.values.app + "-database"
+  namespace: #@ data.values.namespace
+  labels: #@ labels("database")
 spec:
-  serviceName: "postgres"
+  serviceName: #@ data.values.app + "-database"
   replicas: 1
   selector:
-    matchLabels:
-      app: postgres
+    matchLabels: #@ labels("database")
   template:
     metadata:
-      labels:
-        app: postgres
+      labels: #@ labels("database")
     spec:
-      terminationGracePeriodSeconds: 10
+      terminationGracePeriodSeconds: 30
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
       - name: postgres
-        image: jamesclonk/postgres-k8s:latest
+        image: #@ data.values.postgres.image
         ports:
         - containerPort: 5432
         envFrom:
-        - configMapRef:
-            name: postgres-config
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "150m"
-          limits:
-            memory: "128Mi"
-            cpu: "250m"
+        - secretRef:
+            name: #@ data.values.app + "-env-secret"
+        securityContext:
+          allowPrivilegeEscalation: false
+        resources: #@ resources()
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -h 127.0.0.1 -p 5432 -d "${POSTGRES_DB}" -U "${POSTGRES_USER}"
+          failureThreshold: 5
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - exec pg_isready -h 127.0.0.1 -p 5432 -d "${POSTGRES_DB}" -U "${POSTGRES_USER}"
+          failureThreshold: 5
+          initialDelaySeconds: 45
+          periodSeconds: 15
+          successThreshold: 1
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /var/lib/postgresql/data
-          name: postgres-volume
-      volumes:
-      - name: postgres-volume
-        emptyDir: {}
-#!  volumeClaimTemplates:
-#!  - metadata:
-#!      name: postgres-volume
-#!    spec:
-#!      accessModes:
-#!      - ReadWriteOnce
-#!      resources:
-#!        requests:
-#!          storage: 1Gi
+          name: #@ data.values.app + "-volume"

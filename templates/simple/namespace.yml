@@ -1,5 +1,6 @@
+#@ load("@ytt:data", "data")
 ---
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: postgres
+  name: #@ data.values.namespace
