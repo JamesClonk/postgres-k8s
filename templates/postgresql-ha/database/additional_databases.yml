@@ -1,0 +1,41 @@
+#@ load("@ytt:data", "data")
+#@ load("@ytt:assert", "assert")
+#@ load("@ytt:overlay", "overlay")
+#@ load("_ytt.lib.yml", "labels")
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: additional-databases
+  namespace: #@ data.values.namespace
+  labels: #@ labels("additional-databases")
+#@yaml/text-templated-strings
+data:
+  additional_databases.sh: |
+    #!/bin/bash
+    set -e
+    (@ for db in data.values.postgres.additional_databases: @)
+    (@ if len(db.name) == 0: @)
+    (@  assert.fail("name of additional database cannot be empty") @)
+    (@ end @)
+    (@ if len(db.user) == 0: @)
+    (@  assert.fail("user of additional database cannot be empty") @)
+    (@ end @)
+    (@ if len(db.password) == 0: @)
+    (@  assert.fail("password of additional database cannot be empty") @)
+    (@ end @)
+    DB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).username)
+    DB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).password)
+
+    cat > /tmp/setup_db.sql <<EOF
+    CREATE DATABASE (@= db.name @);
+    CREATE ROLE ${DB_USERNAME} LOGIN PASSWORD '${DB_PASSWORD}';
+    GRANT ALL PRIVILEGES ON DATABASE (@= db.name @) TO ${DB_USERNAME};
+    EOF
+
+    psql -v ON_ERROR_STOP=1 -U postgres -d (@= db.name @) -f /tmp/setup_db.sql
+    psql -v ON_ERROR_STOP=1 -U postgres -d (@= db.name @) -c 'CREATE EXTENSION citext'
+
+    rm -f /tmp/setup_db.sql
+    (@ end @)

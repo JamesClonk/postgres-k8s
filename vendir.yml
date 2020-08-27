@@ -1,0 +1,14 @@
+---
+apiVersion: vendir.k14s.io/v1alpha1
+kind: Config
+minimumRequiredVersion: 0.9.0
+
+directories:
+- path: templates/build/postgresql-ha/vendor
+  contents:
+  - path: .
+    git:
+      url: https://github.com/bitnami/charts
+      ref: dae60580b386e5698fda3f9d3ed047bab176384b # version: postgresql-ha/3.5.7
+    includePaths:
+    - bitnami/postgresql-ha/**/*

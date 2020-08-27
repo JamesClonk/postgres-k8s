@@ -1,0 +1,10 @@
+apiVersion: vendir.k14s.io/v1alpha1
+directories:
+- contents:
+  - git:
+      commitTitle: '[bitnami/postgresql-ha] Show correct default for pgpool replicaCount
+        (#3407)...'
+      sha: dae60580b386e5698fda3f9d3ed047bab176384b
+    path: .
+  path: templates/build/postgresql-ha/vendor
+kind: LockConfig
