@@ -7,6 +7,7 @@ postgres:
   memory_in_mb: 256
   disk_in_gb: 1
   persistent_volume: true
+  enable_daily_backups: true
 
   database:
     port: 5432

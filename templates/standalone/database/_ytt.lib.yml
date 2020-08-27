@@ -31,3 +31,13 @@
     cpu: #@ cpu(1.5 * resource["cpu"])
     memory: #@ memory(1.5 * resource["memory"])
 #@ end
+
+#@ def connstr():
+#@   return "postgres://{}:{}@{}:{}/{}?sslmode=disable".format(
+#@     data.values.postgres.database.user,
+#@     data.values.postgres.database.password,
+#@     data.values.app + "-database." + data.values.namespace + ".svc.cluster.local",
+#@     data.values.postgres.database.port,
+#@     data.values.postgres.database.name,
+#@   )
+#@ end
