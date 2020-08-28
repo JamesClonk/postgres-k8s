@@ -26,3 +26,11 @@ spec:
           sizeLimit: #@ disk()
   volumeClaimTemplates: #@overlay/remove
 #@ end
+
+#! cleanup invalid 'volumes: null' entry from helm chart
+#@overlay/match by=overlay.subset({"kind": "Deployment", "metadata":{"name":"postgres-postgresql-ha-pgpool"}}), expects=1
+---
+spec:
+  template:
+    spec:
+      volumes: #@overlay/remove

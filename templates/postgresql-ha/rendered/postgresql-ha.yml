@@ -66,7 +66,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  admin-password: aDBueG1Na3l0Ug==
+  admin-password: TDBTT2JBY1R3Qw==
 kind: Secret
 metadata:
   labels:
@@ -80,8 +80,8 @@ type: Opaque
 ---
 apiVersion: v1
 data:
-  postgresql-password: MGtsRjFDOExmbg==
-  repmgr-password: MXh6NmI5NEcxdA==
+  postgresql-password: V1M0QXRHWXJCMQ==
+  repmgr-password: SWpqTEVuNGVMSA==
 kind: Secret
 metadata:
   labels:
@@ -292,6 +292,16 @@ spec:
       - env:
         - name: BITNAMI_DEBUG
           value: "false"
+        - name: PGPOOL_POSTGRES_CUSTOM_USERS
+          valueFrom:
+            secretKeyRef:
+              key: usernames
+              name: postgres-postgresql-ha-pgpool-additional-database-credentials
+        - name: PGPOOL_POSTGRES_CUSTOM_PASSWORDS
+          valueFrom:
+            secretKeyRef:
+              key: passwords
+              name: postgres-postgresql-ha-pgpool-additional-database-credentials
         - name: PGPOOL_BACKEND_NODES
           value: 0:postgres-postgresql-ha-postgresql-0.postgres-postgresql-ha-postgresql-headless.postgres.svc.cluster.local:5432,1:postgres-postgresql-ha-postgresql-1.postgres-postgresql-ha-postgresql-headless.postgres.svc.cluster.local:5432,
         - name: PGPOOL_SR_CHECK_USER
@@ -556,9 +566,9 @@ spec:
         name: hooks-scripts
       - name: custom-init-scripts-secret
         secret:
-          secretName: postgres-postgresql-ha-additional-database-credentials
+          secretName: postgres-postgresql-ha-postgres-additional-database-credentials
       - configMap:
-          name: postgres-postgresql-ha-additional-databases
+          name: postgres-postgresql-ha-postgres-additional-databases
         name: custom-init-scripts
   updateStrategy:
     type: RollingUpdate

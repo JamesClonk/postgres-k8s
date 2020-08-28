@@ -1,10 +1,11 @@
 postgresql:
-  initdbScriptsCM: postgres-postgresql-ha-additional-databases
-  initdbScriptsSecret: postgres-postgresql-ha-additional-database-credentials
+  initdbScriptsCM: postgres-postgresql-ha-postgres-additional-databases
+  initdbScriptsSecret: postgres-postgresql-ha-postgres-additional-database-credentials
   pdb:
     create: true
 
 pgpool:
+  customUsersSecret: postgres-postgresql-ha-pgpool-additional-database-credentials
   pdb:
     create: true
 

@@ -7,9 +7,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-postgresql-ha-additional-databases
+  name: postgres-postgresql-ha-postgres-additional-databases
   namespace: #@ data.values.namespace
   labels: #@ labels("additional-databases")
+  annotations:
+    kapp.k14s.io/versioned: ""
 #@yaml/text-templated-strings
 data:
   additional_databases.sh: |
@@ -44,9 +46,11 @@ data:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: postgres-postgresql-ha-additional-database-credentials
+  name: postgres-postgresql-ha-postgres-additional-database-credentials
   namespace: #@ data.values.namespace
-  labels: #@ labels("additional-database-credentials")
+  labels: #@ labels("postgres-additional-database-credentials")
+  annotations:
+    kapp.k14s.io/versioned: ""
 #@yaml/text-templated-strings
 data:
   #@ if len(data.values.postgres.database.password) == 0:
@@ -66,3 +70,38 @@ data:
   (@= db.name @).username: (@= base64.encode(db.user) @)
   (@= db.name @).password: (@= base64.encode(db.password) @)
   #@ end
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-postgresql-ha-pgpool-additional-database-credentials
+  namespace: #@ data.values.namespace
+  labels: #@ labels("pgpool-additional-database-credentials")
+  annotations:
+    kapp.k14s.io/versioned: ""
+#@yaml/text-templated-strings
+data:
+  #@ if len(data.values.postgres.database.password) == 0:
+  #@  assert.fail("postgres.database.password cannot be empty")
+  #@ end
+  #@ users = "postgres"
+  #@ passwords = data.values.postgres.database.password
+
+  #@ if len(data.values.postgres.database.password) == 0:
+  #@  assert.fail("postgres.database.password cannot be empty")
+  #@ end
+  #@ for db in data.values.postgres.additional_databases:
+  #@ if len(db.name) == 0:
+  #@  assert.fail("name of additional database cannot be empty")
+  #@ end
+  #@ if len(db.user) == 0:
+  #@  assert.fail("user of additional database cannot be empty")
+  #@ end
+  #@ if len(db.password) == 0:
+  #@  assert.fail("password of additional database cannot be empty")
+  #@ end
+  #@ users = users + ";" + db.user
+  #@ passwords = passwords + ";" + db.password
+  #@ end
+  usernames: #@ base64.encode(users)
+  passwords: #@ base64.encode(passwords)
