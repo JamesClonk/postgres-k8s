@@ -1,6 +1,6 @@
 postgresql:
-  initdbScriptsCM: additional-databases
-  initdbScriptsSecret: additional-database-credentials
+  initdbScriptsCM: postgres-postgresql-ha-additional-databases
+  initdbScriptsSecret: postgres-postgresql-ha-additional-database-credentials
   pdb:
     create: true
 

@@ -66,7 +66,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  admin-password: RmtNNjYxQU1Neg==
+  admin-password: dUpabTIzanJXeA==
 kind: Secret
 metadata:
   labels:
@@ -80,8 +80,8 @@ type: Opaque
 ---
 apiVersion: v1
 data:
-  postgresql-password: SThtaVowOE4xNA==
-  repmgr-password: STl1Tlh4ZE81Mw==
+  postgresql-password: U0NlbDZkZFBIaw==
+  repmgr-password: YjlsVEZoeXdzaA==
 kind: Secret
 metadata:
   labels:
@@ -363,15 +363,15 @@ metadata:
   annotations:
     kbld.k14s.io/images: |
       - Metas:
-        - Tag: 11.9.0-debian-10-r3
-          Type: resolved
-          URL: docker.io/bitnami/postgresql-repmgr:11.9.0-debian-10-r3
-        URL: index.docker.io/bitnami/postgresql-repmgr@sha256:fa6a3e470f545fb383f24a2f88e6da5c1110555b99916c6124f0a9215a5efea5
-      - Metas:
         - Tag: 0.8.0-debian-10-r190
           Type: resolved
           URL: docker.io/bitnami/postgres-exporter:0.8.0-debian-10-r190
         URL: index.docker.io/bitnami/postgres-exporter@sha256:a59b482a13a2bf928ea16e7a35b9daefef73c77a3819c6f03a96487ae89fba53
+      - Metas:
+        - Tag: 11.9.0-debian-10-r3
+          Type: resolved
+          URL: docker.io/bitnami/postgresql-repmgr:11.9.0-debian-10-r3
+        URL: index.docker.io/bitnami/postgresql-repmgr@sha256:fa6a3e470f545fb383f24a2f88e6da5c1110555b99916c6124f0a9215a5efea5
   labels:
     app.kubernetes.io/component: postgresql
     app.kubernetes.io/instance: postgres
@@ -556,9 +556,9 @@ spec:
         name: hooks-scripts
       - name: custom-init-scripts-secret
         secret:
-          secretName: additional-database-credentials
+          secretName: postgres-postgresql-ha-additional-database-credentials
       - configMap:
-          name: additional-databases
+          name: postgres-postgresql-ha-additional-databases
         name: custom-init-scripts
   updateStrategy:
     type: RollingUpdate

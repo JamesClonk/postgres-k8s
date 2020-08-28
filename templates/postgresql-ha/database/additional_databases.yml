@@ -1,13 +1,13 @@
 #@ load("@ytt:data", "data")
 #@ load("@ytt:assert", "assert")
+#@ load("@ytt:base64", "base64")
 #@ load("@ytt:overlay", "overlay")
 #@ load("_ytt.lib.yml", "labels")
-
 ---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: additional-databases
+  name: postgres-postgresql-ha-additional-databases
   namespace: #@ data.values.namespace
   labels: #@ labels("additional-databases")
 #@yaml/text-templated-strings
@@ -39,3 +39,28 @@ data:
 
     rm -f /tmp/setup_db.sql
     (@ end @)
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-postgresql-ha-additional-database-credentials
+  namespace: #@ data.values.namespace
+  labels: #@ labels("additional-database-credentials")
+#@ if len(data.values.postgres.additional_databases) > 0:
+data: #@yaml/text-templated-strings
+  #@ for db in data.values.postgres.additional_databases:
+  #@ if len(db.name) == 0:
+  #@  assert.fail("name of additional database cannot be empty")
+  #@ end
+  #@ if len(db.user) == 0:
+  #@  assert.fail("user of additional database cannot be empty")
+  #@ end
+  #@ if len(db.password) == 0:
+  #@  assert.fail("password of additional database cannot be empty")
+  #@ end
+  (@= db.name @).username: (@= base64.encode(db.user) @)
+  (@= db.name @).password: (@= base64.encode(db.password) @)
+  #@ end
+#@ else:
+data: {}
+#@ end
