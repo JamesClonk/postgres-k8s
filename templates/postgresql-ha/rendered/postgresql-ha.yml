@@ -66,7 +66,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  admin-password: dUpabTIzanJXeA==
+  admin-password: aDBueG1Na3l0Ug==
 kind: Secret
 metadata:
   labels:
@@ -80,8 +80,8 @@ type: Opaque
 ---
 apiVersion: v1
 data:
-  postgresql-password: U0NlbDZkZFBIaw==
-  repmgr-password: YjlsVEZoeXdzaA==
+  postgresql-password: MGtsRjFDOExmbg==
+  repmgr-password: MXh6NmI5NEcxdA==
 kind: Secret
 metadata:
   labels:

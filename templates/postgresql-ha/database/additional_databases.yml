@@ -25,8 +25,8 @@ data:
     (@ if len(db.password) == 0: @)
     (@  assert.fail("password of additional database cannot be empty") @)
     (@ end @)
-    DB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).username)
-    DB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).password)
+    export DB_USERNAME=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).username)
+    export DB_PASSWORD=$(cat /docker-entrypoint-initdb.d/secret/(@= db.name @).password)
 
     cat > /tmp/setup_db.sql <<EOF
     CREATE DATABASE (@= db.name @);
@@ -34,7 +34,8 @@ data:
     GRANT ALL PRIVILEGES ON DATABASE (@= db.name @) TO ${DB_USERNAME};
     EOF
 
-    psql -v ON_ERROR_STOP=1 -U postgres -d (@= db.name @) -f /tmp/setup_db.sql
+    export PGPASSWORD=$(cat /docker-entrypoint-initdb.d/secret/postgres.password)
+    psql -v ON_ERROR_STOP=1 -U postgres -f /tmp/setup_db.sql
     psql -v ON_ERROR_STOP=1 -U postgres -d (@= db.name @) -c 'CREATE EXTENSION citext'
 
     rm -f /tmp/setup_db.sql
@@ -46,8 +47,12 @@ metadata:
   name: postgres-postgresql-ha-additional-database-credentials
   namespace: #@ data.values.namespace
   labels: #@ labels("additional-database-credentials")
-#@ if len(data.values.postgres.additional_databases) > 0:
-data: #@yaml/text-templated-strings
+#@yaml/text-templated-strings
+data:
+  #@ if len(data.values.postgres.database.password) == 0:
+  #@  assert.fail("postgres.database.password cannot be empty")
+  #@ end
+  postgres.password: #@ base64.encode(data.values.postgres.database.password)
   #@ for db in data.values.postgres.additional_databases:
   #@ if len(db.name) == 0:
   #@  assert.fail("name of additional database cannot be empty")
@@ -61,6 +66,3 @@ data: #@yaml/text-templated-strings
   (@= db.name @).username: (@= base64.encode(db.user) @)
   (@= db.name @).password: (@= base64.encode(db.password) @)
   #@ end
-#@ else:
-data: {}
-#@ end
