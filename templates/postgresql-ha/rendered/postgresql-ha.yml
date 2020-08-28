@@ -66,7 +66,7 @@ spec:
 ---
 apiVersion: v1
 data:
-  admin-password: TDBTT2JBY1R3Qw==
+  admin-password: cnpMTUY2NENmWQ==
 kind: Secret
 metadata:
   labels:
@@ -80,8 +80,8 @@ type: Opaque
 ---
 apiVersion: v1
 data:
-  postgresql-password: V1M0QXRHWXJCMQ==
-  repmgr-password: SWpqTEVuNGVMSA==
+  postgresql-password: YzJSWDVVVmd5Qw==
+  repmgr-password: TjBMWTlTOWRSZA==
 kind: Secret
 metadata:
   labels:
@@ -92,6 +92,21 @@ metadata:
     helm.sh/chart: postgresql-ha-3.5.7
   name: postgres-postgresql-ha-postgresql
 type: Opaque
+---
+apiVersion: v1
+data:
+  pgpool.conf: |
+    failover_on_backend_error = 'on'
+    detach_false_primary = 'on'
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/component: pgpool
+    app.kubernetes.io/instance: postgres
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: postgresql-ha
+    helm.sh/chart: postgresql-ha-3.5.7
+  name: postgres-postgresql-ha-pgpool-configuration
 ---
 apiVersion: v1
 data:
@@ -312,7 +327,7 @@ spec:
               key: repmgr-password
               name: postgres-postgresql-ha-postgresql
         - name: PGPOOL_ENABLE_LOAD_BALANCING
-          value: "yes"
+          value: "no"
         - name: PGPOOL_ENABLE_LDAP
           value: "no"
         - name: PGPOOL_POSTGRES_USERNAME
@@ -329,6 +344,8 @@ spec:
             secretKeyRef:
               key: admin-password
               name: postgres-postgresql-ha-pgpool
+        - name: PGPOOL_USER_CONF_FILE
+          value: /opt/bitnami/pgpool/user_config/pgpool.conf
         image: index.docker.io/bitnami/pgpool@sha256:098abc3999a9458f8063074775d31555e10b11d5e0d26fbb3502e5fe3d8b2732
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -362,10 +379,15 @@ spec:
           requests: {}
         securityContext:
           runAsUser: 1001
-        volumeMounts: null
+        volumeMounts:
+        - mountPath: /opt/bitnami/pgpool/user_config/
+          name: pgpool-config
       securityContext:
         fsGroup: 1001
-      volumes: null
+      volumes:
+      - configMap:
+          name: postgres-postgresql-ha-pgpool-configuration
+        name: pgpool-config
 ---
 apiVersion: apps/v1
 kind: StatefulSet

@@ -6,6 +6,10 @@ postgresql:
 
 pgpool:
   customUsersSecret: postgres-postgresql-ha-pgpool-additional-database-credentials
+  useLoadBalancing: false
+  configuration: |
+    failover_on_backend_error = 'on'
+    detach_false_primary = 'on'
   pdb:
     create: true
 
