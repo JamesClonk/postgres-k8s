@@ -6,7 +6,7 @@ namespace: postgres
 pgpool:
   memory_in_mb: 128
   admin:
-    password: 'example1'
+    password: ''
 
 postgres:
   memory_in_mb: 512
@@ -15,12 +15,9 @@ postgres:
 
   database:
     port: 5432
-    password: 'example2'
+    password: ''
 
-  additional_databases:
-  - name: demo_db
-    user: demo_user
-    password: demo_password
+  additional_databases: []
 
   repmgr:
-    password: 'example3'
+    password: ''

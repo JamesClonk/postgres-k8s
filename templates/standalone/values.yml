@@ -4,13 +4,11 @@ app: postgres
 namespace: postgres
 
 postgres:
-  image: "jamesclonk/postgres-k8s:latest"
+  image: "postgres@sha256:4db3e7ffd082919137993ed957f3360ed9ee1901a9122f0446daefce45fc85af" #! postgres:12
 
   memory_in_mb: 512
   disk_in_gb: 1
   persistent_volume: true
-  enable_daily_backups: true
-  run_backup_job_now: false
 
   database:
     port: 5432
