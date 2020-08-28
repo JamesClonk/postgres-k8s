@@ -2,6 +2,13 @@ apiVersion: vendir.k14s.io/v1alpha1
 directories:
 - contents:
   - git:
+      commitTitle: '[bitnami/postgresql] Fix slave'' statefulset when persistence
+        is disabled (#3527)...'
+      sha: 3910de7325317b752e1c2e46456fbdaa765cb50b
+    path: .
+  path: templates/build/postgresql/vendor
+- contents:
+  - git:
       commitTitle: '[bitnami/postgresql-ha] Show correct default for pgpool replicaCount
         (#3407)...'
       sha: dae60580b386e5698fda3f9d3ed047bab176384b

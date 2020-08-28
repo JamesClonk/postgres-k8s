@@ -3,11 +3,6 @@
 app: postgres
 namespace: postgres
 
-pgpool:
-  memory_in_mb: 128
-  admin:
-    password: ''
-
 postgres:
   memory_in_mb: 512
   disk_in_gb: 1
@@ -15,8 +10,20 @@ postgres:
 
   database:
     password: ''
-
   additional_databases: []
 
-  repmgr:
+pgadmin:
+  image: "dpage/pgadmin4:4.25"
+
+  enabled: false
+  auth:
+    user: ''
+    password: ''
+
+pgweb:
+  image: "sosedoff/pgweb:0.11.6"
+
+  enabled: false
+  auth:
+    user: ''
     password: ''

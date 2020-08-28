@@ -4,6 +4,15 @@ kind: Config
 minimumRequiredVersion: 0.9.0
 
 directories:
+- path: templates/build/postgresql/vendor
+  contents:
+  - path: .
+    git:
+      url: https://github.com/bitnami/charts
+      ref: 3910de7325317b752e1c2e46456fbdaa765cb50b # version: postgresql/9.3.3
+    includePaths:
+    - bitnami/postgresql/**/*
+    - bitnami/common/**/*
 - path: templates/build/postgresql-ha/vendor
   contents:
   - path: .
